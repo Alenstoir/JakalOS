@@ -1,0 +1,44 @@
+/* Entry Point */ 
+
+HEAP_SIZE = 2048; 
+
+
+
+SECTIONS 
+{ 
+. = 0x8000; 
+.text : 
+	{ 
+	_text = .; 
+	*(.text*) 
+	*(.rodata*) 
+	_etext = .; 
+	}	 
+.data : AT(ADDR(.text) + SIZEOF(.text)) 
+	{ 
+	_data = .; 
+	_ldata = LOADADDR (.data); 
+	*(vtable) 
+	*(.data*) 
+	*(.rdata*)
+	_edata = .; 
+	} 
+
+.bss : 
+	{ 
+	_bss = .; 
+	*(.bss*) 
+	*(COMMON) 
+	_ebss = .; 
+	} 
+
+.heap : AT(ADDR(.bss) + SIZEOF(.bss)) 
+	{ 
+	. = ALIGN(8); 
+	__end__ = .; 
+	PROVIDE(end = .); 
+	__HeapBase = .; 
+	. += HEAP_SIZE; 
+	__HeapLimit = .; 
+	} 
+}
